@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
+const {ObjectID} = require('mongodb');
 var {mongoose} = require('./DB/mongoose'); //es6 destructuring
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -21,29 +21,42 @@ todo.save().then((doc) => {
 
 	res.status(400).send(e);
 });
-
-
-var todo1 = new Todo ({
- text : req.body.text
 });
-todo1.save().then((doc) => {
+app.get('/todos', (req,res) => {
 
-	res.send(doc);
-}, (e) => {
+	todo.find().then((todos) =>{
+
+		res.send({todos});
+	})
+}, (e) =>{
 
 	res.status(400).send(e);
+
 });
 
-var todo2 = new Todo ({
- text : req.body.text
-});
-todo2.save().then((doc) => {
+app.get('/todos/:id',(req,res) =>{
 
-	res.send(doc);
-}, (e) => {
+		var id = req.params.id;
+		 if (!ObjectID.isValid(id)) {
 
-	res.status(400).send(e);
-});
+
+		 		return res.status(404).send();
+		 }
+
+	Todo.findById(id).then((todo) => {
+
+		if(!todo){
+
+			res.status(404).send();
+		}
+		res.send({todo});
+
+	}).catch((e) => {
+		res.status(404).send();
+	})
+
+
+
 });
 
 
@@ -54,3 +67,5 @@ app.listen(3000,() => {
 console.log('started on port 3000');
 
 }) ;
+
+module.exports = {app}; //es6
