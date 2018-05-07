@@ -60,6 +60,34 @@ app.get('/todos/:id',(req,res) =>{
 });
 
 
+app.delete('/todos/:id', (req,res) => {
+
+	//getting the id
+	var id = req.params.id;
+
+	//validating the id--not valid return 404 error
+	if(!ObjectID.isValid(id)){
+		return res.status(404).send();
+	}
+	Todo.findByIdAndRemove(id).then((doc) => {
+
+		//if document does not exist
+		if(!doc){
+			//sending status code 404
+			return res.status(404).send();
+		}
+		//if the document is found, sending the document  as the respone
+		res.status(200).send(doc);
+	}).catch((e) => {   //sending the catch if any error occurs
+
+	//sending status code 404
+	res.status(404).send();
+})
+
+});
+
+
+
 
 
 app.listen(3000,() => {
