@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
-var User = mongoose.model('User',{
+var User = mongoose.model('User',{ //Creates a collection User
 
-	email:{
+	email:{                    //Document creation
 
 		required : true,
 		minlength : 1,
